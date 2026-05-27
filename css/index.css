@@ -1,0 +1,5 @@
+@import "./base/globals.css";
+@import "./base/normalize.css";
+@import "./base/section/authorization.css";
+@import "./base/section/registration.css";
+@import "./base/section/main.css";

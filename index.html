@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/base/normalize.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <div id="loginScreen" class="auth screen">
+        <div class="auth__card">
+            <h2 class="auth__title">Вход в систему</h2>
+            <p class="auth__subtitle">Доступ к личным данным</p>
+            <form class="auth__form">
+                <label class="auth__label">
+                    <input type="text" id="loginInput" class="auth__input" placeholder="Логин или Email"
+                        name="auth-login--email" required>
+                </label>
+                <label class="auth__label">
+                    <input type="password" id="loginPass" class="auth__input" placeholder="Пароль" name="auth-password"
+                        required>
+                </label>
+                <button type="button" class="auth__submit" onclick="login()">Войти</button>
+            </form>
+            <a href="#" class="auth__switch-link" onclick="togglePage('register')"> Нет аккаунта? Зарегистрироваться</a>
+        </div>
+    </div>
+
+    <div id="registerScreen" class="regist screen hidden">
+        <div class="regist__card">
+            <h2 class="regist__title">Регистрация</h2>
+            <p class="regist__subtitle">Создайте учётную запись</p>
+            <form class="regist__form">
+                <label class="regist__label">
+                    <input type="text" id="regLogin" class="regist__input" placeholder="Логин (например, ivanov123)"
+                        name="reg-login" required>
+                </label>
+                <label class="auth__label">
+                    <input type="email" id="regEmail" class="regist__input" placeholder="Email (например, ivan@vac.ru)"
+                        name="reg-login" required>
+                </label>
+                <label class="auth__label">
+                    <input type="password" id="regPass" class="regist__input" placeholder="Пароль" name="reg-pass"
+                        required>
+                </label>
+                <button type="button" class="regist__submit" onclick="register()">Зарегистрироваться</button>
+            </form>
+            <a href="#" class="regist__switch-link" onclick="togglePage('login')">Уже есть аккаунт? Войти</a>
+        </div>
+    </div>
+
+    <div id="mainScreen" class="main-screen screen hidden">
+        <div class="container">
+            <div class="header">
+                <h1 class="header__title">Калькулятор для расчёта воздухообменов</h1>
+                <div class="header__info">
+                    <span id="userName" class="user-info"></span>
+                    <button type="button" class="logout-btn" onclick="logout()">Выйти</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button type="button" class="tab-btn active" onclick="switchTab('rooms')">Воздухообмены</button>
+                <button type="button" class="tab-btn" onclick="switchTab('systems')">Системы и Калориферы</button>
+            </div>
+
+            <div id="rooms" class="tab-content active">
+                <div class="card">
+                    <h3>Добавить помещение в расчет</h3>
+                    <p class="hint-text"> Примечание: значения кратности до 10 (например, 1.5 или 2) умножаются на
+                        объем. Значения больше 10 (например, 50 для Санузлов/КУИ) принимаются как фиксированный расход в
+                        м³/ч.</p>
+
+                    <div class="form-grid">
+                        <div>
+                            <label>Номер</label>
+                            <input type="text" id="r_name" placeholder="К4.-1.70">
+                        </div>
+                        <div>
+                            <label>Тип помещения</label>
+                            <input type="text" id="r_type" placeholder="Кладовая, офис...">
+                        </div>
+                        <div>
+                            <label>Площадь (м²)</label>
+                            <input type="number" id="r_area" value="20" step="0.1">
+                        </div>
+                        <div>
+                            <label>Высота помещения (м)</label>
+                            <input type="number" id="r_height" value="3.0" step="0.1">
+                        </div>
+                        <div>
+                            <label>Приток (Кратн. или м³/ч)</label>
+                            <input type="number" id="r_mult_in" value="1.5" step="0.1">
+                        </div>
+                        <div>
+                            <label>Вытяжка (Кратн. или м³/ч)</label>
+                            <input type="number" id="r_mult_out" value="1.5" step="0.1">
+                        </div>
+                        <div>
+                            <label>Приток (Система)</label>
+                            <input type="text" id="r_sys_in" value="П1">
+                        </div>
+                        <div>
+                            <label>Вытяжка (Система)</label>
+                            <input type="text" id="r_sys_out" value="В1">
+                        </div>
+                    </div>
+                    <button type="button" class="action-btn" onclick="addRoom()">Добавить помещение</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Сводная таблица помещений</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Помещение</th>
+                                    <th>Тип (СП)</th>
+                                    <th>Площадь, м²</th>
+                                    <th>Высота, м</th>
+                                    <th>V, м³</th>
+                                    <th>Приток, м³/ч</th>
+                                    <th>Система П.</th>
+                                    <th>Вытяжка, м³/ч</th>
+                                    <th>Система В.</th>
+                                    <th>Управление</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="systems" class="tab-content">
+                <div class="card">
+                    <h3>Характеристики систем вентиляции</h3>
+                    <p class="hint-text">Расчетные параметры: Запас = 1.1, Темп. наружная = -32°C, Темп. внутри = 18°C. Нагрузка
+                        считается только для приточных систем.</p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Наименование системы</th>
+                                    <th>Базовый расход (м³/ч)</th>
+                                    <th>Расход с запасом 1.1 (м³/ч)</th>
+                                    <th>Нагрузка на калорифер (кВт)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="systemsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+
+</html>
